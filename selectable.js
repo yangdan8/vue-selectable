@@ -199,17 +199,44 @@ export default class selectable {
         return false;
     }
 
+  /**
+   * 获取 event target (支持shadow root)
+   *
+   * @param e
+   */
+  getEventTarget(e) {
+    const { el } = this;
+    if (!e || !el) {
+      return;
+    }
+
+    const rootEle = el.getRootNode();
+
+    let isInsideShadowRoot = false;
+    if (rootEle !== document) {
+      isInsideShadowRoot = true;
+    }
+
+    if (isInsideShadowRoot) {
+      const paths = e.composedPath();
+      return (paths && paths.length && paths[0]);
+    }
+    return e.target;
+  }
+
     /**
      * Mouse key down handler
      * @param {MouseEvent} e
      */
     mouseDown(e) {
-        const isSrcDescendant = this.el === e.target || this.el.contains(e.target);
+        const eTarget = this.getEventTarget(e);
+        const isSrcDescendant = this.el === eTarget || this.el.contains(eTarget);
         if (e.button !== 0 || !isSrcDescendant) {
             return;
         }
+        const rootEl = this.el.getRootNode();
         if (!!this.boundingBoxSelector) {
-            this.boundingBox = document.querySelector(this.boundingBoxSelector);
+            this.boundingBox = rootEl.querySelector(this.boundingBoxSelector);
         }
         let bb = selectable.absBox(this.boundingBox);
         if (e.pageX < bb.left || e.pageX > bb.width + bb.left ||
@@ -224,7 +251,7 @@ export default class selectable {
             this.scrollRepeater = null;
         }
         let [x, y] = this.bound(e);
-        this.selectBox = document.querySelector(this.selectBoxSelector);
+        this.selectBox = rootEl.querySelector(this.selectBoxSelector);
         if (this.scrollingFrame) {
             y += this.scrollingFrame.scrollTop;
         }
