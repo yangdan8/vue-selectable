@@ -1,6 +1,6 @@
 {
   "name": "vue-selectable",
-  "version": "0.6.0-pi.1",
+  "version": "0.6.0-pi.2",
   "description": "Directive to make objects selectable in vue.js application",
   "main": "dist/selectable.js",
   "repository": {

@@ -1,5 +1,7 @@
 import selectable, { objectAssignSimple } from './selectable';
 
+export const SelectableOption = selectable;
+
 const objectAssign = Object.assign || objectAssignSimple;
 
 function initSelectable(el, params, arg) {
